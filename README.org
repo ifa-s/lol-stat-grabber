@@ -4,3 +4,4 @@ Tool to grab lol stats using riven API in rust
 *** lol-stat-grabber
 + Custom object to store profile data -- for use in other project
 + Object has ability to compare and be above
++ Account object for single account, moved to profile account to take in multiple accounts
