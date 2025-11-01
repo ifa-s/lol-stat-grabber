@@ -1,0 +1,6 @@
+* lol-stat-grabber
+Tool to grab lol stats using riven API in rust
+** Project Structure
+*** lol-stat-grabber
++ Custom object to store profile data -- for use in other project
++ Object has ability to compare and be above
