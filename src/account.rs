@@ -8,7 +8,7 @@ pub struct Account {
 }
 
 impl Account {
-    pub async fn fill_mastery(&mut self, api: riven::RiotApi, platform: riven::consts::PlatformRoute) {
+    async fn fill_mastery(&mut self, api: riven::RiotApi, platform: riven::consts::PlatformRoute) {
         let masteries = api
             .champion_mastery_v4()
             .get_all_champion_masteries_by_puuid(platform, &self.puuid).await.expect("Get masteries failed");
@@ -21,6 +21,7 @@ impl Account {
         }
     }
 
+    // Prints mastery from account, TODO add sort
     pub fn print_mastery(&mut self) {
         println!("{}#{}'s masteries: ", self.game_name, self.tag_line);
         for (id, map) in self.mastery.iter() {
@@ -28,7 +29,8 @@ impl Account {
         }
     }
 }
-pub fn init_account(game_name: String, tag_line: String, puuid: String) -> Account {
-    let acc = Account{game_name: game_name, tag_line: tag_line, puuid: puuid, mastery: HashMap::new()};
+pub async fn init_account(api: riven::RiotApi, platform: riven::consts::PlatformRoute, game_name: String, tag_line: String, puuid: String) -> Account {
+    let mut acc = Account{game_name: game_name, tag_line: tag_line, puuid: puuid, mastery: HashMap::new()};
+    acc.fill_mastery(api, platform).await;
     return acc;
 }

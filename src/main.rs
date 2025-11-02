@@ -1,4 +1,4 @@
-use riven::consts::PlatformRoute;
+use riven::consts::{PlatformRoute, RegionalRoute};
 use riven::RiotApi;
 use std::env;
 mod account;
@@ -9,22 +9,31 @@ async fn main() {
 
     let api = env::var("API").expect("API must be set in .env file");
     println!("API={}", api);
-    let riot_api = RiotApi::new(api);
-
+    let riot_api = RiotApi::new(&api);
     let platform = PlatformRoute::NA1;
-
-    let acc = riot_api
+    let region = RegionalRoute::AMERICAS;
+    let acc = &riot_api
         .account_v1()
         .get_by_riot_id(platform.to_regional(), "CARTPUSHER12", "KBD")
         .await
         .expect("Get summoner failed.")
         .expect("There is no summoner with that name.");
 
-    println!("{}", acc.game_name.unwrap_or_default());
     let puid = &acc.puuid;
 
-    let mut na = init_account("CARTPUSHER12".to_string(), "KBD".to_string(), puid.to_string());
-    na.fill_mastery(riot_api, platform).await;
+    let mut na = init_account(riot_api, platform, "CARTPUSHER12".to_string(), "KBD".to_string(), puid.to_string()).await;
     na.print_mastery();
+
+    let riot_api = RiotApi::new(&api);
+    let matches = riot_api.match_v5().get_match_ids_by_puuid(region, puid, None, None, None, None, None, None).await;
+    for m in matches.iter() {
+        for n in m {
+            print!("{} ", n)
+        }
+        println!("");
+    }
+    //riven::endpoints::MatchV5::try_get_match_ids_by_puuid(platform, puid, )
+
+    // TODO Create match struct (or use riven provided one), create a vector?
 
 }
