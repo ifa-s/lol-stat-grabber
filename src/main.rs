@@ -8,7 +8,6 @@ async fn main() {
     dotenvy::dotenv().ok();
 
     let api = env::var("API").expect("API must be set in .env file");
-    println!("API={}", api);
     let riot_api = RiotApi::new(&api);
     let platform = PlatformRoute::NA1;
     let region = RegionalRoute::AMERICAS;
@@ -21,17 +20,10 @@ async fn main() {
 
     let puid = &acc.puuid;
 
-    let mut na = init_account(riot_api, platform, "CARTPUSHER12".to_string(), "KBD".to_string(), puid.to_string()).await;
-    na.print_mastery();
+    let mut na = init_account(&api, platform, region, "CARTPUSHER12".to_string(), "KBD".to_string(), puid.to_string()).await;
+    na.print_matches();
 
-    let riot_api = RiotApi::new(&api);
-    let matches = riot_api.match_v5().get_match_ids_by_puuid(region, puid, None, None, None, None, None, None).await;
-    for m in matches.iter() {
-        for n in m {
-            print!("{} ", n)
-        }
-        println!("");
-    }
+
     //riven::endpoints::MatchV5::try_get_match_ids_by_puuid(platform, puid, )
 
     // TODO Create match struct (or use riven provided one), create a vector?
