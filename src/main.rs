@@ -23,6 +23,7 @@ async fn main() {
     let mut na = init_account(&api, platform, region, "CARTPUSHER12".to_string(), "KBD".to_string(), puid.to_string()).await;
     na.print_matches();
 
+    account::get_largest_crit(na);
 
     //riven::endpoints::MatchV5::try_get_match_ids_by_puuid(platform, puid, )
 

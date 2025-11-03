@@ -59,3 +59,17 @@ pub async fn init_account(api: &str, platform: riven::consts::PlatformRoute, reg
     acc.fill_matches(riot_api, region).await;
     return acc;
 }
+
+pub fn get_largest_crit(acc: Account) {
+    let mut max = 0;
+    for (_id, m) in acc.matches {
+        for p in m.info.participants.clone() {
+            if p.puuid == acc.puuid {
+                if p.largest_critical_strike > max {
+                    max = p.largest_critical_strike;
+                }
+            }
+        }
+    }
+    println!("{}#{}'s largest crit: {}", acc.game_name, acc.tag_line, max);
+}
