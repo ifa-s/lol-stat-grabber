@@ -1,10 +1,12 @@
 use std::collections::HashMap;
 use riven::RiotApi;
-
+use serde::{Serialize,Deserialize};
+#[derive(Default, Serialize, Deserialize)]
 pub struct Account {
+
+    pub puuid: String,
     pub game_name: String,
     pub tag_line: String,
-    pub puuid: String,
     pub mastery: HashMap<riven::consts::Champion, HashMap<String, i64>>,
     pub matches: HashMap<String, riven::models::match_v5::Match>
 }
@@ -24,9 +26,12 @@ impl Account {
     }
 
     async fn fill_matches(&mut self, api: riven::RiotApi, region: riven::consts::RegionalRoute) {
+        // 1735689600 = Jan 1st 2025 in Epoch
+        //let matches = api.match_v5().get_match_ids_by_puuid(region, &self.puuid, Some(1735689600), None, None, None, None, None).await;
         let matches = api.match_v5().get_match_ids_by_puuid(region, &self.puuid, None, None, None, None, None, None).await;
         for m in matches.iter() {
             for id in m {
+                // This will take a long time!
                 self.matches.insert(id.to_string(), api.match_v5().get_match(region, id).await.expect("Failed to find match").unwrap());
             }
             println!("");
